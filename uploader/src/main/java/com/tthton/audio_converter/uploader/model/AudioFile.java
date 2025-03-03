@@ -1,4 +1,4 @@
-package com.tthton.audio_converter.uploader.model.dto;
+package com.tthton.audio_converter.uploader.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class FileDataDto {
+public class AudioFile {
     @JsonProperty("documentId")
     private Integer documentId;
 
