@@ -9,11 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 public class UploaderApplication {
-	private static final Logger log = LoggerFactory.getLogger(UploaderApplication.class);
-
 	public static void main(String[] args) {
 		SpringApplication.run(UploaderApplication.class, args);
-
-		log.debug("The application has just started!");
+		log.info("The application has just started!");
 	}
 }
