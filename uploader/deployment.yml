@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uploader
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audio-app
+  template:
+    metadata:
+      labels:
+        app: audio-app
+    spec:
+      containers:
+        - name: audio-app
+          image: audio-app:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: audio-storage
+              mountPath: /app/uploads
+      volumes:
+        - name: audio-storage
+          emptyDir: {}
