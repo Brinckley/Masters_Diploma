@@ -1,10 +1,29 @@
 version: '3.8'
 
 services:
-  uploader-service:
+  basic-pitch-worker:
+    build:
+      context: ./basic-pitch-worker
+    container_name: basic-pitch-worker-container
+    ports:
+      - "8000:8000"
+    networks:
+      - converter-network
+
+  uploader:
     build:
       context: ./uploader
+    container_name: uploader-container
     ports:
       - "8080:8080"
-    restart: always
+    depends_on:
+      - basic-pitch-worker
+    environment:
+      NEURAL_WORKER_HOST: "basic-pitch-worker"
+      NEURAL_WORKER_PORT: "8000"
+    networks:
+      - converter-network
 
+networks:
+  converter-network:
+    driver: bridge

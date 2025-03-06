@@ -1,8 +1,7 @@
 package com.tthton.audio_converter.uploader.controller;
 
 import com.tthton.audio_converter.uploader.model.dto.FileRequestDto;
-import com.tthton.audio_converter.uploader.model.dto.FileResponseDto;
-import com.tthton.audio_converter.uploader.service.AudioFileService;
+import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -11,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * Rest controller related to downloading and uploading input files
@@ -20,21 +18,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequiredArgsConstructor
 public class AudioFileController {
-    private final AudioFileService audioFileService;
+    private final AudioFileBusiness audioFileService;
 
     @PostMapping(value = "/uploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadAudioFile(@RequestParam("userId") Integer userId,
-                                  @RequestParam("documentType") String documentType,
-                                  @RequestParam("file") MultipartFile file) {
-        FileRequestDto audioFileRequestDto = FileRequestDto.builder().userId(userId)
-                .documentType(documentType)
-                .multipartFile(file).build();
+    public String uploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
         log.info("The file with name {} received at uploadFile endpoint",
-                audioFileRequestDto.getMultipartFile().getName());
+                audioFileRequestDto);
 
         return audioFileService.saveFile(audioFileRequestDto.getUserId(),
                 audioFileRequestDto.getDocumentType(),
-                audioFileRequestDto.getMultipartFile());
+                audioFileRequestDto.getFile());
     }
 
     @GetMapping("/downloadAudio/{fileName}")
