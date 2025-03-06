@@ -1,12 +1,10 @@
-package com.tthton.audio_converter.uploader.service;
+package com.tthton.audio_converter.uploader.business;
 
-import com.tthton.audio_converter.uploader.model.dto.FileResponseDto;
+import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-
-public interface AudioFileService {
+public interface AudioFileBusiness {
     /**
      * Saving file with its basic information
      *
@@ -24,4 +22,12 @@ public interface AudioFileService {
      * @return file as resource
      */
     Resource loadFileAsResource(String fileName);
+
+    /**
+     * Convert audio file to midi
+     *
+     * @param multipartFile audio file
+     * @return midi file as resource
+     */
+    Resource convertFile(MultipartFile multipartFile) throws AudioFileException;
 }

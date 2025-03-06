@@ -1,10 +1,26 @@
 version: '3.8'
 
 services:
-  uploader-service:
+  basic-pitch-worker:
+    build:
+      context: ./basic-pitch-worker
+    container_name: basic-pitch-worker-container
+    ports:
+      - "8000:8000"
+    networks:
+      - my-network
+
+  uploader:
     build:
       context: ./uploader
+    container_name: uploader-container
     ports:
       - "8080:8080"
-    restart: always
+    depends_on:
+      - basic-pitch-worker
+    networks:
+      - my-network
 
+networks:
+  my-network:
+    driver: bridge

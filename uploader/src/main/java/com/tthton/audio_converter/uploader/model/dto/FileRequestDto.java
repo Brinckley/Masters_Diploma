@@ -11,14 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Data
 @Builder
-@Jacksonized
 public class FileRequestDto {
-    @JsonProperty("userId")
     private Integer userId;
 
-    @JsonProperty("documentType")
     private String documentType;
 
-    @JsonProperty("file")
-    private MultipartFile multipartFile;
+    private MultipartFile file;
 }
