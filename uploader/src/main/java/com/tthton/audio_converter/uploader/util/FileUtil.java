@@ -9,6 +9,12 @@ import java.util.UUID;
  */
 @UtilityClass
 public class FileUtil {
+    /**
+     * Generating unique name based on the original file name
+     *
+     * @param originalFileName original file name
+     * @return unique file name
+     */
     public String generateFileName(String originalFileName) {
         return UUID.randomUUID() + "_" + originalFileName;
     }

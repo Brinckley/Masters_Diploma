@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 /**
  * Implementation of {@link AudioFileBusiness}
@@ -24,35 +25,27 @@ import java.nio.file.Paths;
 @Service
 @RequiredArgsConstructor
 public class AudioFileBusinessImpl implements AudioFileBusiness {
-    private static final String FILES_STORAGE_DIRECTORY_NAME = "uploads/";
-
     private final AudioFileRepository audioFileRepository;
 
     @Override
     public String saveFile(int userId, String documentType, MultipartFile multipartFile) throws AudioFileException {
         String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
-        Path filePath = Paths.get(FILES_STORAGE_DIRECTORY_NAME, completeFileName);
 
-        log.info("New filename {}", filePath.getFileName());
+        log.info("New filename {}", completeFileName);
 
         try {
-            audioFileRepository.saveFile(filePath, multipartFile);
+            audioFileRepository.saveFile(completeFileName, multipartFile);
         } catch (IOException e) {
             log.error(e.getMessage());
             throw AudioFileException.format("Cannot save file : ", e.getMessage());
-
         }
-        return filePath.toString();
+        return completeFileName;
     }
 
     @Override
     public Resource loadFileAsResource(String fileName) {
-        Path filePath = Paths.get(FILES_STORAGE_DIRECTORY_NAME).resolve(fileName).normalize();
-
-        File file = audioFileRepository.loadFile(filePath);
-        if (!file.exists()) {
-            log.error("File does not exist : {}", file.getAbsoluteFile());
-        }
+        File file = audioFileRepository.loadFile(fileName)
+                .orElseThrow(() -> AudioFileException.format("Cannot get file with filename %s", fileName));
 
         Resource resource;
         try {

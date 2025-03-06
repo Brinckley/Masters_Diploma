@@ -8,7 +8,7 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - my-network
+      - converter-network
 
   uploader:
     build:
@@ -18,9 +18,12 @@ services:
       - "8080:8080"
     depends_on:
       - basic-pitch-worker
+    environment:
+      NEURAL_WORKER_HOST: "basic-pitch-worker"
+      NEURAL_WORKER_PORT: "8000"
     networks:
-      - my-network
+      - converter-network
 
 networks:
-  my-network:
+  converter-network:
     driver: bridge

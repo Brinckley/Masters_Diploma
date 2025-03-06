@@ -16,14 +16,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 
+/**
+ * In memory realization of {@link AudioFileRepository}
+ */
 @Slf4j
 @Repository
 @RequiredArgsConstructor
 public class AudioFileRepositoryImpl implements AudioFileRepository {
+    private static final String UPLOADS_DIRECTORY_NAME = "uploads/";
+
+    @PostConstruct
+    private void initDirectories() throws AudioFileException {
+        try {
+            Files.createDirectories(Paths.get(UPLOADS_DIRECTORY_NAME));
+        } catch (IOException e) {
+            throw AudioFileException.format("Cannot create uploads folder : %s", e.getMessage());
+        }
+    }
+
     @Override
-    public void saveFile(Path filePath, MultipartFile multipartFile) throws IOException {
-        Files.createDirectories(Paths.get("uploads/"));
+    public void saveFile(String fileName, MultipartFile multipartFile) throws IOException {
+        Path filePath = Paths.get(UPLOADS_DIRECTORY_NAME, fileName);
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             log.info("Inside save file method with filePath : {}", filePath);
@@ -32,7 +47,10 @@ public class AudioFileRepositoryImpl implements AudioFileRepository {
     }
 
     @Override
-    public File loadFile(Path filePath) {
-        return new File(filePath.toString());
+    public Optional<File> loadFile(String fileName) {
+        Path filePath = Paths.get(UPLOADS_DIRECTORY_NAME).resolve(fileName).normalize();
+
+        File file = new File(filePath.toString());
+        return file.exists() ? Optional.of(file) : Optional.empty();
     }
 }

@@ -16,7 +16,7 @@ public interface AudioFileClient {
     FileNameDto sendFile(String pathToSavedFile) throws AudioFileException;
 
     /**
-     * Ping healthcheck of the neural network worker service
+     * Ping healthcheck to the neural network worker service
      *
      * @param message message
      * @return response message

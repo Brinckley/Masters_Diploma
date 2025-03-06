@@ -4,6 +4,9 @@ import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Business logic for dealing with audio file
+ */
 public interface AudioFileBusiness {
     /**
      * Saving file with its basic information
