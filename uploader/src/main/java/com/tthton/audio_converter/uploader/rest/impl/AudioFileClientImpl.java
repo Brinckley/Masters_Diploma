@@ -4,6 +4,7 @@ import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Implementation of {@link AudioFileClient}
  */
+@Slf4j
 @Service
-
 public class AudioFileClientImpl implements AudioFileClient {
     private static final String ENV_NAME_HOST = "NEURAL_WORKER_HOST";
 
@@ -34,8 +35,10 @@ public class AudioFileClientImpl implements AudioFileClient {
     private final String NEURAL_WORKER_URL = String.format(URL_FORMAT, NEURAL_WORKER_HOST, NEURAL_WORKER_PORT);
 
     @Override
-    public FileNameDto sendFile(String pathToSavedFile) throws AudioFileException{
+    public FileNameDto sendFilePath(String pathToSavedFile) throws AudioFileException{
         String url = NEURAL_WORKER_URL + RECEIVE_PATH;
+
+        log.info("Sending file path to url : {}", url);
 
         FileNameDto fileNameDto = FileNameDto.builder().filePath(pathToSavedFile).build();
 
@@ -56,6 +59,8 @@ public class AudioFileClientImpl implements AudioFileClient {
     @Override
     public String pingEcho(String message) throws AudioFileException {
         String url = NEURAL_WORKER_URL + HEALTH_CHECK_PATH;
+
+        log.info("Sending healthcheck ping to url : {}", url);
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 

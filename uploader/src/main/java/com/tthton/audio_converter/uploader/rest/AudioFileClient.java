@@ -13,7 +13,7 @@ public interface AudioFileClient {
      * @param pathToSavedFile path to saved file
      * @throws AudioFileException cannot handle request
      */
-    FileNameDto sendFile(String pathToSavedFile) throws AudioFileException;
+    FileNameDto sendFilePath(String pathToSavedFile) throws AudioFileException;
 
     /**
      * Ping healthcheck to the neural network worker service

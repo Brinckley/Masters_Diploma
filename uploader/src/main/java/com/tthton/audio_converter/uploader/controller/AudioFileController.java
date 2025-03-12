@@ -30,6 +30,14 @@ public class AudioFileController {
                 audioFileRequestDto.getFile());
     }
 
+    @PostMapping(value = "/testUploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String testUploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
+        log.info("TEST : The file with name {} received at testUploadFile endpoint",
+                audioFileRequestDto);
+
+        return audioFileService.sendFileToBasicPitch(audioFileRequestDto.getFile());
+    }
+
     @GetMapping("/downloadAudio/{fileName}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
         Resource audioResource = audioFileService.loadFileAsResource(fileName);

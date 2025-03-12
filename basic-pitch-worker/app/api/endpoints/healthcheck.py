@@ -7,6 +7,6 @@ router = APIRouter()
 
 @router.get("/healthcheck")
 async def healthcheck():
-    logger.info("Healthcheck endpoint is reached")
+    logger.info("Healthcheck endpoint is finally reached")
 
     return "success"

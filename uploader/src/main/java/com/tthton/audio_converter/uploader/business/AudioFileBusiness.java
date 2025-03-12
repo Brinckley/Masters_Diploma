@@ -33,4 +33,6 @@ public interface AudioFileBusiness {
      * @return midi file as resource
      */
     Resource convertFile(MultipartFile multipartFile) throws AudioFileException;
+
+    String sendFileToBasicPitch(MultipartFile multipartFile) throws AudioFileException;
 }

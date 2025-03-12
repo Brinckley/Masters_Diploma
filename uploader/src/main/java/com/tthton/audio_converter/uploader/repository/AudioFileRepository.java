@@ -13,9 +13,10 @@ public interface AudioFileRepository {
      *
      * @param fileName file name
      * @param multipartFile file
+     * @return path to the saved file
      * @throws IOException cannot save the file
      */
-    void saveFile(String fileName, MultipartFile multipartFile) throws IOException;
+    String saveFile(String fileName, MultipartFile multipartFile) throws IOException;
 
     /**
      * Getting optional of file by its name

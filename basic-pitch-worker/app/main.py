@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="FastAPI File Echo")
 
-app.include_router(file.router, prefix="/api")
+app.include_router(file.router)
 app.include_router(healthcheck.router)
 
 # Root route for testing

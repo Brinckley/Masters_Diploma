@@ -37,13 +37,15 @@ public class AudioFileRepositoryImpl implements AudioFileRepository {
     }
 
     @Override
-    public void saveFile(String fileName, MultipartFile multipartFile) throws IOException {
+    public String saveFile(String fileName, MultipartFile multipartFile) throws IOException {
         Path filePath = Paths.get(UPLOADS_DIRECTORY_NAME, fileName);
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             log.info("Inside save file method with filePath : {}", filePath);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
+
+        return filePath.toString();
     }
 
     @Override
