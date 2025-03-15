@@ -1,15 +1,6 @@
 version: '3.8'
 
 services:
-  basic-pitch-worker:
-    build:
-      context: ./basic-pitch-worker
-    container_name: basic-pitch-worker-container
-    ports:
-      - "8000:8000"
-    networks:
-      - converter-network
-
   uploader:
     build:
       context: ./uploader
@@ -21,9 +12,40 @@ services:
     environment:
       NEURAL_WORKER_HOST: "basic-pitch-worker"
       NEURAL_WORKER_PORT: "8000"
+      SHARED_AUDIO_FOLDER: "/app/uploads"
+      SHARED_MIDI_FOLDER: "/app/midis"
     networks:
       - converter-network
+    volumes:
+      - uploads-data:/app/uploads
+      - midis-data:/app/midis
+      - ./tmp/uploads:/app/uploads
+      - ./tmp/midis:/app/midis    
+
+
+  basic-pitch-worker:
+    build:
+      context: ./basic-pitch-worker
+    container_name: basic-pitch-worker-container
+    ports:
+      - "8000:8000"
+    environment:
+      SHARED_AUDIO_FOLDER: "/app/uploads"
+      SHARED_MIDI_FOLDER: "/app/midis"
+    networks:
+      - converter-network
+    volumes:
+      - uploads-data:/app/uploads
+      - midis-data:/app/midis
+      - ./tmp/uploads:/app/uploads
+      - ./tmp/midis:/app/midis    
 
 networks:
   converter-network:
     driver: bridge
+
+volumes:
+  uploads-data:
+    driver: local
+  midis-data:
+    driver: local

@@ -75,7 +75,7 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
             throw AudioFileException.format("Cannot save file : ", e.getMessage());
         }
 
-        audioFileClient.sendFilePath(filePath);
+        audioFileClient.sendFilePath(completeFileName);
 
         return completeFileName;
     }

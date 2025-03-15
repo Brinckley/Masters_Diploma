@@ -25,7 +25,9 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class AudioFileRepositoryImpl implements AudioFileRepository {
-    private static final String UPLOADS_DIRECTORY_NAME = "uploads/";
+    private static final String SHARED_AUDIO_FOLDER_ENV = "SHARED_AUDIO_FOLDER";
+
+    private static final String UPLOADS_DIRECTORY_NAME = System.getenv(SHARED_AUDIO_FOLDER_ENV);
 
     @PostConstruct
     private void initDirectories() throws AudioFileException {
