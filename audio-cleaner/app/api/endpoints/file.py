@@ -6,7 +6,7 @@ from fastapi import APIRouter
 
 from app.model import FileNameDto
 from app.cleaner.audio_cleaner import clean_noise
-from app.rest.sender import send_request
+from app.rest.sender import send_post_request
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,6 @@ async def receive_file(dto: FileNameDto):
     filename_dto = clean_noise(filename=dto.filePath)
 
     url = "http://" + basic_pitch_host + ":" + basic_pitch_port + "/receive"
-    response = send_request(filename_dto, url)
+    response = send_post_request(dto, url)
 
     return response
