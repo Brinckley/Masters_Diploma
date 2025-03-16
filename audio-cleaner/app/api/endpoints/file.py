@@ -1,13 +1,12 @@
 import os
 import logging
-import requests
+import asyncio
 
 from fastapi import APIRouter
 
 from app.model import FileNameDto
 from app.cleaner.audio_cleaner import clean_noise
-from app.rest.sender import send_post_request
-
+from app.rest.sender import send_file_info
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +19,13 @@ basic_pitch_port = os.getenv("BASIC_PITCH_PORT")
 async def receive_file(dto: FileNameDto):
     logger.error(f"File entity for uploading is received {dto.filePath} ")
 
-    filename_dto = clean_noise(filename=dto.filePath)
+    filename_dto = clean_noise(filename=dto.filePath) # TODO
 
-    url = "http://" + basic_pitch_host + ":" + basic_pitch_port + "/receive"
-    response = send_post_request(dto, url)
+    url = f"http://{basic_pitch_host}:{basic_pitch_port}/receive"
+    logger.error(f"Url for sending the data : {url}")
+    logger.error(f"Data : {dto.model_dump()}")
 
-    return response
+    result = await send_file_info(url, dto)
+    logger.error(f"Url for sending the data : {url}, Result is {result}")
+
+    return result
