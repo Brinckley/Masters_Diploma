@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: uploader-service
+  name: converter-service
 spec:
   selector:
-    app: audio-uploader
+    app: audio-converter
   ports:
     - protocol: TCP
-      port: 8080     
-      targetPort: 8080
-      nodePort: 30006
+      port: 8000     
+      targetPort: 8000
+      nodePort: 30007
   type: NodePort
 
 
@@ -19,25 +19,25 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: uploader-deployment
+  name: converter-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: audio-uploader
+      app: audio-converter
   template:
     metadata:
       labels:
-        app: audio-uploader
+        app: audio-converter
     spec:
       containers:
-        - name: audio-uploader
-          image: brinckley/audio-uploader:v1.0.0
+        - name: audio-converter
+          image: brinckley/audio-converter:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 8080
+            - containerPort: 8000
           volumeMounts:
-            - mountPath: "/uploads"
+            - mountPath: "/midis"
               name: file-storage
       volumes:
         - name: file-storage

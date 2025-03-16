@@ -1,29 +1,81 @@
 version: '3.8'
 
 services:
-  basic-pitch-worker:
-    build:
-      context: ./basic-pitch-worker
-    container_name: basic-pitch-worker-container
-    ports:
-      - "8000:8000"
-    networks:
-      - converter-network
-
   uploader:
     build:
       context: ./uploader
     container_name: uploader-container
     ports:
       - "8080:8080"
-    depends_on:
-      - basic-pitch-worker
     environment:
-      NEURAL_WORKER_HOST: "basic-pitch-worker"
-      NEURAL_WORKER_PORT: "8000"
+      NEURAL_WORKER_HOST: "audio-cleaner"
+      NEURAL_WORKER_PORT: "8001"
+      SHARED_AUDIO_FOLDER: "/app/uploads"
+      SHARED_MIDI_FOLDER: "/app/midis"
+    depends_on:
+      audio-cleaner:
+        condition: service_healthy
+      basic-pitch-worker:
+        condition: service_healthy
     networks:
       - converter-network
+    volumes:
+      - uploads-data:/app/uploads
+      - midis-data:/app/midis
+      - ./tmp/uploads:/app/uploads
+      - ./tmp/midis:/app/midis
+
+  audio-cleaner:
+    build:
+      context: ./audio-cleaner
+    container_name: audio-cleaner-container
+    ports:
+      - "8001:8001"
+    environment:
+      BASIC_PITCH_HOST: "basic-pitch-worker"
+      BASIC_PITCH_PORT: "8011"
+      SHARED_AUDIO_FOLDER: "/app/uploads"
+    networks:
+      - converter-network
+    volumes:
+      - uploads-data:/app/uploads
+      - ./tmp/uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/healthcheck"]
+      interval: 30s  
+      timeout: 10s   
+      retries: 3     
+      start_period: 5s
+
+  basic-pitch-worker:
+    build:
+      context: ./basic-pitch-worker
+    container_name: basic-pitch-worker-container
+    ports:
+      - "8011:8011"
+    environment:
+      SHARED_AUDIO_FOLDER: "/app/uploads"
+      SHARED_MIDI_FOLDER: "/app/midis"
+    networks:
+      - converter-network
+    volumes:
+      - uploads-data:/app/uploads
+      - midis-data:/app/midis
+      - ./tmp/uploads:/app/uploads
+      - ./tmp/midis:/app/midis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/healthcheck"]
+      interval: 30s  
+      timeout: 10s   
+      retries: 3     
+      start_period: 5s 
 
 networks:
   converter-network:
     driver: bridge
+
+volumes:
+  uploads-data:
+    driver: local
+  midis-data:
+    driver: local
