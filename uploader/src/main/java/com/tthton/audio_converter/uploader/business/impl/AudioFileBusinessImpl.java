@@ -1,6 +1,7 @@
 package com.tthton.audio_converter.uploader.business.impl;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
+import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
@@ -75,8 +76,8 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
             throw AudioFileException.format("Cannot save file : ", e.getMessage());
         }
 
-        audioFileClient.sendFilePath(completeFileName);
+        FileNameDto fileNameDto = audioFileClient.sendFilePath(completeFileName);
 
-        return completeFileName;
+        return fileNameDto.getFilePath();
     }
 }

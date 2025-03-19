@@ -1,9 +1,14 @@
 fastapi==0.115.11
 pydantic==2.10.6
 uvicorn==0.34.0
-librosa==0.10.2.post1
-soundfile==0.13.1
-noisereduce==2.0.0
 requests~=2.32.3
-httpx== 0.28.1
+httpx==0.28.1
 aiohttp==3.11.13
+
+torchaudio==2.1.0
+numpy==1.26.4
+git+https://github.com/adefossez/demucs.git
+soundfile==0.13.1
+#torch==2.6.0
+#pysndfile==1.4.7
+#python-ffmpeg==2.0.12

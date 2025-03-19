@@ -23,6 +23,7 @@ async def receive_file(dto: FileNameDto):
 
     url = f"http://{basic_pitch_host}:{basic_pitch_port}/receive"
     logger.error(f"Url for sending the data : {url}")
+    dto.filePath = filename_dto
     logger.error(f"Data : {dto.model_dump()}")
 
     result = await send_file_info(url, dto)
