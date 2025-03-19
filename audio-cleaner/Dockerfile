@@ -1,8 +1,15 @@
-FROM python:3.10
+FROM python:3.9
 
 WORKDIR /app
-COPY requirements.txt .
 
+RUN apt-get update && apt-get install -y \
+    libsndfile1 \
+    libsndfile-dev \
+    ffmpeg
+
+ENV SNDFILE_INSTALL_DIR=/usr/lib/x86_64-linux-gnu
+
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .

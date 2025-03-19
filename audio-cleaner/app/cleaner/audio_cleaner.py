@@ -1,38 +1,41 @@
 import os
-import noisereduce as nr
-import soundfile as sf
-import librosa
 import logging
+
+import torchaudio
+import demucs
+import demucs.api
+from demucs.apply import apply_model
+from demucs.pretrained import get_model
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 shared_audio_folder = os.getenv("SHARED_AUDIO_FOLDER")
 
 def clean_noise(filename):
     logger.info(f"File received for cleaning: {filename}")
 
-    # Construct file path
     filepath = os.path.join(shared_audio_folder, filename)
-    logger.info(f"Final file path: {filepath}")
+    output_filename = f"cleaned_{filename}"
+    output_filepath = os.path.join(shared_audio_folder, output_filename)
+    logger.info(f"Expected final path {output_filepath}")
 
-    try:
-        # Load audio file
-        y, sr = librosa.load(filepath, sr=None)  # Preserve original sample rate
-        logger.info("Audio file loaded successfully.")
+    separator = demucs.api.Separator(split=False)
+    logger.info(f"Separator created...")
 
-        # Reduce noise
-        y_cleaned = nr.reduce_noise(y=y, sr=sr, prop_decrease=0.8)
-        logger.info("Noise reduction applied.")
+    origin, separated = separator.separate_audio_file(filepath)
+    logger.info(f"Separator applied... {origin}")
+    logger.info(f"Separator applied... {separated}")
 
-        # Save cleaned audio file
-        cleaned_filename = "cleaned_" + filename
-        cleaned_filepath = os.path.join(shared_audio_folder, cleaned_filename)
-        sf.write(cleaned_filepath, y_cleaned, sr)
-        logger.info(f"Cleaned file saved at: {cleaned_filepath}")
+    for item in separated:
+        logger.info(f"Item : {item}")
+        logger.info(f"Value : {separated[item]}")
+        for i in separated[item]:
+            logger.error(f"-----------{i}")
+        # for file, sources in item:
+        #     for stem, source in sources.items():
+        #         demucs.api.save_audio(source, f"{stem}_{file}", samplerate=separator.samplerate)
 
-        logger.error("))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))")
-        return cleaned_filepath
-    except Exception as e:
-        logger.error(f"Error processing file: {e}")
-        return None
+    logger.info(f"Noise-cleaned file saved : {output_filepath}")
+    return output_filename
