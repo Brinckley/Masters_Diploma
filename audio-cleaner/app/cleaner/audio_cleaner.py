@@ -1,11 +1,8 @@
 import os
 import logging
 
+from demucs.api import Separator
 import torchaudio
-import demucs
-import demucs.api
-from demucs.apply import apply_model
-from demucs.pretrained import get_model
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,21 +18,19 @@ def clean_noise(filename):
     output_filepath = os.path.join(shared_audio_folder, output_filename)
     logger.info(f"Expected final path {output_filepath}")
 
-    separator = demucs.api.Separator(split=False)
-    logger.info(f"Separator created...")
+    separator = Separator(model="htdemucs", device="cpu")
+    logger.info("Demucs Separator initialized.")
 
-    origin, separated = separator.separate_audio_file(filepath)
-    logger.info(f"Separator applied... {origin}")
-    logger.info(f"Separator applied... {separated}")
+    sources = separator.separate_audio_file(filepath)
+    logger.info(f"The sources type {type(sources)}")
 
-    for item in separated:
-        logger.info(f"Item : {item}")
-        logger.info(f"Value : {separated[item]}")
-        for i in separated[item]:
-            logger.error(f"-----------{i}")
-        # for file, sources in item:
-        #     for stem, source in sources.items():
-        #         demucs.api.save_audio(source, f"{stem}_{file}", samplerate=separator.samplerate)
-
-    logger.info(f"Noise-cleaned file saved : {output_filepath}")
+    for item in sources:
+        logger.info(f"Type : {type(item)}")
+        logger.info(item)
+        if type(item) is dict:
+            if "other" in item:
+                waveform = item["other"]
+                sample_rate = 44100  # worth parsing rate
+                torchaudio.save(output_filepath, waveform, sample_rate)
+                logger.info(f"Noise-cleaned file saved as {output_filepath}")
     return output_filename
