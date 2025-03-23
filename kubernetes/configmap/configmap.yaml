@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: uploader-config
-data:
-  NEURAL_WORKER_HOST: "converter-service"
-  NEURAL_WORKER_PORT: "8000"

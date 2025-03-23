@@ -2,6 +2,7 @@ package com.tthton.audio_converter.uploader.rest;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
+import io.micrometer.core.annotation.Timed;
 
 /**
  * Functions for communication with app that uses the convertor NN
@@ -13,6 +14,7 @@ public interface AudioFileClient {
      * @param pathToSavedFile path to saved file
      * @throws AudioFileException cannot handle request
      */
+    @Timed("sendingAudioFile")
     FileNameDto sendFilePath(String pathToSavedFile) throws AudioFileException;
 
     /**
@@ -22,5 +24,6 @@ public interface AudioFileClient {
      * @return response message
      * @throws AudioFileException cannot handle request
      */
+    @Timed("pingEcho")
     String pingEcho(String message) throws AudioFileException;
 }
