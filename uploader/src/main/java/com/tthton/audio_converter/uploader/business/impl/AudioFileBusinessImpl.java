@@ -6,6 +6,7 @@ import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import com.tthton.audio_converter.uploader.util.FileUtil;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -16,21 +17,36 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementation of {@link AudioFileBusiness}
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class AudioFileBusinessImpl implements AudioFileBusiness {
+    private static final String FILE_SIZE_GAUGE_NAME = "AUDIO_FILE_SIZE";
+
     private final AudioFileRepository audioFileRepository;
 
     private final AudioFileClient audioFileClient;
 
+    private final AtomicLong audioFileSizeGauge;
+
+    public AudioFileBusinessImpl(AudioFileRepository audioFileRepository, AudioFileClient audioFileClient, MeterRegistry meterRegistry) {
+        this.audioFileRepository = audioFileRepository;
+        this.audioFileClient = audioFileClient;
+
+        audioFileSizeGauge = new AtomicLong(0);
+        meterRegistry.gauge(FILE_SIZE_GAUGE_NAME, audioFileSizeGauge);
+    }
+
     @Override
     public String saveFile(int userId, String documentType, MultipartFile multipartFile) throws AudioFileException {
         String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
+
+        audioFileSizeGauge.set(multipartFile.getSize());
 
         log.info("New filename {}", completeFileName);
 
@@ -65,6 +81,8 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
     @Override
     public String sendFileToBasicPitch(MultipartFile multipartFile) throws AudioFileException {
         String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
+
+        audioFileSizeGauge.set(multipartFile.getSize());
 
         log.info("Saving file for conversion filename {}", completeFileName);
 

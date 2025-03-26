@@ -6,19 +6,18 @@ services:
       context: ./uploader
     container_name: uploader-container
     ports:
-      - "8080:8080"
-    environment:
-      NEURAL_WORKER_HOST: "audio-cleaner"
-      NEURAL_WORKER_PORT: "8001"
-      SHARED_AUDIO_FOLDER: "/app/uploads"
-      SHARED_MIDI_FOLDER: "/app/midis"
+      - 8080:8080
+    env_file:
+      - ./env/uploader.env
     depends_on:
       audio-cleaner:
         condition: service_healthy
       basic-pitch-worker:
         condition: service_healthy
     networks:
-      - converter-network
+      converter-network:
+        aliases:
+          - uploader
     volumes:
       - uploads-data:/app/uploads
       - midis-data:/app/midis
@@ -30,13 +29,13 @@ services:
       context: ./audio-cleaner
     container_name: audio-cleaner-container
     ports:
-      - "8001:8001"
-    environment:
-      BASIC_PITCH_HOST: "basic-pitch-worker"
-      BASIC_PITCH_PORT: "8011"
-      SHARED_AUDIO_FOLDER: "/app/uploads"
+      - 8001:8001
+    env_file:
+      - ./env/audio-cleaner.env
     networks:
-      - converter-network
+      converter-network:
+        aliases:
+          - audio-cleaner
     volumes:
       - uploads-data:/app/uploads
       - ./tmp/uploads:/app/uploads
@@ -52,12 +51,13 @@ services:
       context: ./basic-pitch-worker
     container_name: basic-pitch-worker-container
     ports:
-      - "8011:8011"
-    environment:
-      SHARED_AUDIO_FOLDER: "/app/uploads"
-      SHARED_MIDI_FOLDER: "/app/midis"
+      - 8011:8011
+    env_file:
+      - ./env/basic-pitch-worker.env
     networks:
-      - converter-network
+      converter-network:
+        aliases:
+          - basic-pitch-worker
     volumes:
       - uploads-data:/app/uploads
       - midis-data:/app/midis
@@ -69,6 +69,25 @@ services:
       timeout: 10s   
       retries: 3     
       start_period: 5s 
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - converter-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - converter-network
 
 networks:
   converter-network:

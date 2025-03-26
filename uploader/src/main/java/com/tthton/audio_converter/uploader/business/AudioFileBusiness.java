@@ -34,5 +34,11 @@ public interface AudioFileBusiness {
      */
     Resource convertFile(MultipartFile multipartFile) throws AudioFileException;
 
+    /**'
+     * Sending file to the conversion
+     * @param multipartFile audio file
+     * @return converted file
+     * @throws AudioFileException if unable to handle the file
+     */
     String sendFileToBasicPitch(MultipartFile multipartFile) throws AudioFileException;
 }

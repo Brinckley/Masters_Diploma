@@ -2,6 +2,8 @@ package com.tthton.audio_converter.uploader.controller;
 
 import com.tthton.audio_converter.uploader.model.dto.FileRequestDto;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class AudioFileController {
     private final AudioFileBusiness audioFileService;
 
+    @Observed(name = "uploadAudioEndpoint")
     @PostMapping(value = "/uploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String uploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
         log.info("The file with name {} received at uploadFile endpoint",
@@ -30,6 +33,7 @@ public class AudioFileController {
                 audioFileRequestDto.getFile());
     }
 
+    @Observed(name = "testUploadAudioEndpoint")
     @PostMapping(value = "/testUploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String testUploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
         log.info("TEST : The file with name {} received at testUploadFile endpoint",
