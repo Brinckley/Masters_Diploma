@@ -2,6 +2,7 @@ package com.tthton.audio_converter.uploader.controller;
 
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -24,14 +25,14 @@ public class HealthCheckController {
 
     private final AudioFileClient audioFileClient;
 
-    @Timed("healthcheckEndpoint")
+    @Observed(name = "healthcheckEndpoint")
     @GetMapping("/healthcheck")
     public String healthCheck() {
         log.info("The health check request arrived");
         return HEALTH_CHECK_RETURN_MSG;
     }
 
-    @Timed("healthcheckGlobalEndpoint")
+    @Observed(name = "healthcheckGlobalEndpoint")
     @GetMapping("/healthcheck_global")
     public String healthCheckGlobal() {
         log.info("The global health check request arrived to Uploader");

@@ -1,6 +1,7 @@
 package com.tthton.audio_converter.uploader.repository;
 
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.observation.annotation.Observed;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public interface AudioFileRepository {
      * @return path to the saved file
      * @throws IOException cannot save the file
      */
-    @Timed("savingAudioFile")
+    @Observed(name = "savingAudioFile")
     String saveFile(String fileName, MultipartFile multipartFile) throws IOException;
 
     /**
@@ -25,6 +26,6 @@ public interface AudioFileRepository {
      * @param fileName file name
      * @return optional of file
      */
-    @Timed("loadingFile")
+    @Observed(name = "loadingFile")
     Optional<File> loadFile(String fileName);
 }
