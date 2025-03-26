@@ -14,7 +14,6 @@ public interface AudioFileClient {
      * @param pathToSavedFile path to saved file
      * @throws AudioFileException cannot handle request
      */
-    @Timed("sendingAudioFile")
     FileNameDto sendFilePath(String pathToSavedFile) throws AudioFileException;
 
     /**
@@ -24,6 +23,5 @@ public interface AudioFileClient {
      * @return response message
      * @throws AudioFileException cannot handle request
      */
-    @Timed("pingEcho")
     String pingEcho(String message) throws AudioFileException;
 }
