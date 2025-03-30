@@ -52,7 +52,7 @@ public class AudioFileClientImpl implements AudioFileClient {
     }
 
     @Override
-    public String sendGetRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException {
+    public String sendPostRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException {
         String url = NEURAL_WORKER_URL + CONVERT_PATH;
         log.info("Sending file path to url : {}", url);
 

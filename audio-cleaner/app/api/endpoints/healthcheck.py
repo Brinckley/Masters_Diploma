@@ -13,7 +13,7 @@ basic_pitch_port = os.getenv("BASIC_PITCH_PORT")
 
 @router.get("/healthcheck")
 async def healthcheck():
-    logger.error("Healthcheck cleaner endpoint is finally reached")
+    logger.error("Healthcheck endpoint in the cleaner service is reached")
 
     url = "http://" + basic_pitch_host + ":" + basic_pitch_port + "/healthcheck"
     response = requests.get(url)

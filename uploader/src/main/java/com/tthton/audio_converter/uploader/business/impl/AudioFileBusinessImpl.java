@@ -3,7 +3,6 @@ package com.tthton.audio_converter.uploader.business.impl;
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
-import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
@@ -12,13 +11,11 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -53,10 +50,10 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
 
         ConversionAudioDto conversionAudioDto = ConversionAudioDto.builder()
                 .fileName(completeFileName)
-                .instrumentType(audioRequestDto.getInstrumentType().toString())
+                .instrumentType(audioRequestDto.getInstrumentType().getType())
                 .build();
 
-        String midiFileName = audioFileClient.sendGetRequest(conversionAudioDto);
+        String midiFileName = audioFileClient.sendPostRequest(conversionAudioDto);
 
         File file = audioFileRepository.loadMidiFile(midiFileName)
                 .orElseThrow(() -> AudioFileException.format("Cannot load midi result for name %s", midiFileName));

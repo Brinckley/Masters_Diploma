@@ -1,47 +1,60 @@
 package com.tthton.audio_converter.uploader.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Optional;
 
 /**
  * Instrument type for demucs clearing
  */
+@Getter
+@AllArgsConstructor
 public enum InstrumentType {
     /**
-     * the original track
+     * Original track
      */
-    ORIGINAL,
+    ORIGINAL("original"),
 
     /**
-     * the separated vocal track
+     * Separated vocal track
      */
-    VOCALS,
+    VOCALS("vocals"),
 
     /**
-     * the separated drum track.
+     * Separated drum track.
      */
-    DRUMS,
+    DRUMS("drums"),
 
     /**
-     * the separated bass track.
+     * Separated bass track.
      */
-    BASS,
+    BASS("bass"),
 
     /**
-     * the remaining musical accompaniment
+     * Remaining musical accompaniment
      */
-    OTHER;
-
-    int type;
+    OTHER("other");
 
     /**
-     * Convert integer value to {@link InstrumentType} type
+     * Type name
+     */
+    final String type;
+
+    /**
+     * Convert string value to {@link InstrumentType} type
      *
-     * @param type integer value
+     * @param type string value
      * @return optional of instrument type
      */
-    public static Optional<InstrumentType> from(int type) {
+    public static Optional<InstrumentType> from(String type) {
+        if (type == null) {
+            return Optional.empty();
+        }
+
         for (InstrumentType instrumentType : InstrumentType.values()) {
-            if (instrumentType.type == type) {
+            if (instrumentType.type.equals(type)) {
                 return Optional.of(instrumentType);
             }
         }
