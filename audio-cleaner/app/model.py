@@ -1,5 +1,11 @@
 from pydantic import BaseModel
 
 
-class FileNameDto(BaseModel):
-    filePath: str
+class AudioFileDto(BaseModel):
+    instrumentType: str
+
+    fileName: str
+
+
+class CleanedAudioFileDto(BaseModel):
+    fileName: str

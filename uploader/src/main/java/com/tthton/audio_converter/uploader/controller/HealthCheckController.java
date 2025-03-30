@@ -21,7 +21,11 @@ public class HealthCheckController {
 
     private static final String GLOBAL_HEALTH_CHECK_RETURN_MSG = "All services are running";
 
+    private static final String GLOBAL_HEALTH_CHECK_FAIL_RETURN_MSG = "Failed to check all of the services";
+
     private static final String PING_ECHO_MESSAGE = "Hello";
+
+    private static final String PING_ECHO_MESSAGE_RESPONSE = "\"success\"";
 
     private final AudioFileClient audioFileClient;
 
@@ -40,6 +44,10 @@ public class HealthCheckController {
         String echoMsg = audioFileClient.pingEcho(PING_ECHO_MESSAGE);
         log.info("Message received from another service is {}", echoMsg);
 
-        return GLOBAL_HEALTH_CHECK_RETURN_MSG;
+        if (echoMsg.equals(PING_ECHO_MESSAGE_RESPONSE)) {
+            return GLOBAL_HEALTH_CHECK_RETURN_MSG;
+        } else {
+            return GLOBAL_HEALTH_CHECK_FAIL_RETURN_MSG;
+        }
     }
 }

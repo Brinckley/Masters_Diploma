@@ -1,13 +1,14 @@
-import logging
-
 from fastapi import APIRouter
+from app.logger.logger import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 router = APIRouter()
 
+success_msg = "success"
+
 @router.get("/healthcheck")
 async def healthcheck():
-    logger.error("Basic pitch healthcheck endpoint is finally reached")
+    logger.info("Basic pitch healthcheck endpoint is reached")
 
-    return "success"
+    return success_msg

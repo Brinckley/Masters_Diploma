@@ -1,5 +1,8 @@
 from pydantic import BaseModel
 
 
-class FileNameDto(BaseModel):
-    filePath: str
+class AudioFileNameDto(BaseModel):
+    fileName: str
+
+class MidiFileDto(BaseModel):
+    fileName: str
