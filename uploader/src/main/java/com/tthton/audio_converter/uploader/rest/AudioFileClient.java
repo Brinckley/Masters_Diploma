@@ -1,6 +1,7 @@
 package com.tthton.audio_converter.uploader.rest;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
+import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import io.micrometer.core.annotation.Timed;
 
@@ -9,14 +10,6 @@ import io.micrometer.core.annotation.Timed;
  */
 public interface AudioFileClient {
     /**
-     * Sending file path to the neural network worker
-     *
-     * @param pathToSavedFile path to saved file
-     * @throws AudioFileException cannot handle request
-     */
-    FileNameDto sendFilePath(String pathToSavedFile) throws AudioFileException;
-
-    /**
      * Ping healthcheck to the neural network worker service
      *
      * @param message message
@@ -24,4 +17,12 @@ public interface AudioFileClient {
      * @throws AudioFileException cannot handle request
      */
     String pingEcho(String message) throws AudioFileException;
+
+    /**
+     * Send data to the next microservice
+     *
+     * @param conversionAudioDto data for conversion
+     * @return name of the converted file
+     */
+    String sendGetRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException;
 }

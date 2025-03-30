@@ -1,14 +1,16 @@
 package com.tthton.audio_converter.uploader.business.impl;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
+import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
+import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import com.tthton.audio_converter.uploader.util.FileUtil;
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -43,59 +44,32 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
     }
 
     @Override
-    public String saveFile(int userId, String documentType, MultipartFile multipartFile) throws AudioFileException {
-        String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
+    public Resource convertFile(AudioRequestDto audioRequestDto) throws AudioFileException {
+        MultipartFile audioFile = audioRequestDto.getAudioFile();
+        audioFileSizeGauge.set(audioFile.getSize());
 
-        audioFileSizeGauge.set(multipartFile.getSize());
+        String completeFileName = FileUtil.generateFileName(audioFile.getOriginalFilename());
+        saveFile(completeFileName, audioFile);
 
-        log.info("New filename {}", completeFileName);
+        ConversionAudioDto conversionAudioDto = ConversionAudioDto.builder()
+                .fileName(completeFileName)
+                .instrumentType(audioRequestDto.getInstrumentType().toString())
+                .build();
 
+        String midiFileName = audioFileClient.sendGetRequest(conversionAudioDto);
+
+        File file = audioFileRepository.loadMidiFile(midiFileName)
+                .orElseThrow(() -> AudioFileException.format("Cannot load midi result for name %s", midiFileName));
+
+        return new FileSystemResource(file);
+    }
+
+    private void saveFile(String completeFileName, MultipartFile audioFile) throws AudioFileException {
         try {
-            audioFileRepository.saveFile(completeFileName, multipartFile);
+            audioFileRepository.saveAudioFile(completeFileName, audioFile);
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.error("Cannot save the audioFile in repository {}", e.getMessage());
             throw AudioFileException.format("Cannot save file : ", e.getMessage());
         }
-        return completeFileName;
-    }
-
-    @Override
-    public Resource loadFileAsResource(String fileName) {
-        File file = audioFileRepository.loadFile(fileName)
-                .orElseThrow(() -> AudioFileException.format("Cannot get file with filename %s", fileName));
-
-        Resource resource;
-        try {
-            resource = new UrlResource(file.toURI());
-        } catch (MalformedURLException e) {
-            throw AudioFileException.format("Cannot get file with filename %s", fileName);
-        }
-        return resource;
-    }
-
-    @Override
-    public Resource convertFile(MultipartFile multipartFile) throws AudioFileException {
-        return null;
-    }
-
-    @Override
-    public String sendFileToBasicPitch(MultipartFile multipartFile) throws AudioFileException {
-        String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
-
-        audioFileSizeGauge.set(multipartFile.getSize());
-
-        log.info("Saving file for conversion filename {}", completeFileName);
-
-        String filePath;
-        try {
-            filePath = audioFileRepository.saveFile(completeFileName, multipartFile);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw AudioFileException.format("Cannot save file : ", e.getMessage());
-        }
-
-        FileNameDto fileNameDto = audioFileClient.sendFilePath(completeFileName);
-
-        return fileNameDto.getFilePath();
     }
 }

@@ -1,5 +1,6 @@
 package com.tthton.audio_converter.uploader.controller;
 
+import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.FileRequestDto;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import io.micrometer.core.annotation.Timed;
@@ -22,37 +23,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class AudioFileController {
     private final AudioFileBusiness audioFileService;
 
-    @Observed(name = "uploadAudioEndpoint")
-    @PostMapping(value = "/uploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
-        log.info("The file with name {} received at uploadFile endpoint",
-                audioFileRequestDto);
+    @Observed(name = "convertToMidi")
+    @GetMapping(value = "/convertAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Resource> convertToMidi(@ModelAttribute AudioRequestDto audioRequestDto) {
+        String audioFileName = audioRequestDto.getAudioFile().getName();
+        log.info("The file received for conversion with the name {}", audioFileName);
 
-        return audioFileService.saveFile(audioFileRequestDto.getUserId(),
-                audioFileRequestDto.getDocumentType(),
-                audioFileRequestDto.getFile());
-    }
-
-    @Observed(name = "testUploadAudioEndpoint")
-    @PostMapping(value = "/testUploadAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String testUploadAudioFile(@ModelAttribute FileRequestDto audioFileRequestDto) {
-        log.info("TEST : The file with name {} received at testUploadFile endpoint",
-                audioFileRequestDto);
-
-        return audioFileService.sendFileToBasicPitch(audioFileRequestDto.getFile());
-    }
-
-    @GetMapping("/downloadAudio/{fileName}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-        Resource audioResource = audioFileService.loadFileAsResource(fileName);
-
-        if (!audioResource.exists()) {
-            return ResponseEntity.notFound().build();
-        }
+        Resource resource = audioFileService.convertFile(audioRequestDto);
 
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                .body(audioResource);
+                .contentType(MediaType.parseMediaType("audio/midi"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + audioFileName + "\"")
+                .body(resource);
     }
 }

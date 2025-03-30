@@ -27,32 +27,35 @@ import java.util.Optional;
 public class AudioFileRepositoryImpl implements AudioFileRepository {
     private static final String SHARED_AUDIO_FOLDER_ENV = "SHARED_AUDIO_FOLDER";
 
+    private static final String SHARED_MIDI_FOLDER_ENV = "SHARED_MIDI_FOLDER";
+
     private static final String UPLOADS_DIRECTORY_NAME = System.getenv(SHARED_AUDIO_FOLDER_ENV);
+
+    private static final String MIDI_DIRECTORY_NAME = System.getenv(SHARED_MIDI_FOLDER_ENV);
 
     @PostConstruct
     private void initDirectories() throws AudioFileException {
         try {
             Files.createDirectories(Paths.get(UPLOADS_DIRECTORY_NAME));
+            Files.createDirectories(Paths.get(MIDI_DIRECTORY_NAME));
         } catch (IOException e) {
-            throw AudioFileException.format("Cannot create uploads folder : %s", e.getMessage());
+            throw AudioFileException.format("Cannot create uploads and midis folders : %s", e.getMessage());
         }
     }
 
     @Override
-    public String saveFile(String fileName, MultipartFile multipartFile) throws IOException {
+    public void saveAudioFile(String fileName, MultipartFile multipartFile) throws IOException {
         Path filePath = Paths.get(UPLOADS_DIRECTORY_NAME, fileName);
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
             log.info("Inside save file method with filePath : {}", filePath);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         }
-
-        return filePath.toString();
     }
 
     @Override
-    public Optional<File> loadFile(String fileName) {
-        Path filePath = Paths.get(UPLOADS_DIRECTORY_NAME).resolve(fileName).normalize();
+    public Optional<File> loadMidiFile(String fileName) {
+        Path filePath = Paths.get(MIDI_DIRECTORY_NAME).resolve(fileName).normalize();
 
         File file = new File(filePath.toString());
         return file.exists() ? Optional.of(file) : Optional.empty();
