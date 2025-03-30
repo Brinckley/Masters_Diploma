@@ -63,6 +63,8 @@ public class AudioFileClientImpl implements AudioFileClient {
 
         ResponseEntity<ConvertedAudioDto> response = restTemplate.postForEntity(url, request, ConvertedAudioDto.class);
 
+        log.info("Return value : {}", response);
+
         if (response.getStatusCode() != HttpStatus.OK) {
             throw AudioFileException.format("Failed to get ping response from converter client. Status code %d",
                     response.getStatusCode().value());

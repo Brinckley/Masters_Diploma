@@ -1,5 +1,7 @@
 package com.tthton.audio_converter.uploader.controller;
 
+import com.tthton.audio_converter.uploader.model.AudioFile;
+import com.tthton.audio_converter.uploader.model.InstrumentType;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.FileRequestDto;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
@@ -26,10 +28,16 @@ public class AudioFileController {
     @Observed(name = "convertToMidi")
     @GetMapping(value = "/convertAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Resource> convertToMidi(@ModelAttribute AudioRequestDto audioRequestDto) {
+        AudioFile audioFile = AudioFile.builder()
+                .userId(audioRequestDto.getUserId())
+                .instrumentType(InstrumentType.from(audioRequestDto.getInstrumentType()).orElse(InstrumentType.OTHER))
+                .audioFile(audioRequestDto.getAudioFile())
+                .build();
+
         String audioFileName = audioRequestDto.getAudioFile().getName();
         log.info("The file received for conversion with the name {}", audioFileName);
 
-        Resource resource = audioFileService.convertFile(audioRequestDto);
+        Resource resource = audioFileService.convertFile(audioFile);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("audio/midi"))

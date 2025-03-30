@@ -1,14 +1,8 @@
-import logging
 from fastapi import FastAPI
 from app.api.endpoints import file, healthcheck
+from app.logger.logger import get_logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()]
-)
-
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 app = FastAPI(title="FastAPI File Echo")
 

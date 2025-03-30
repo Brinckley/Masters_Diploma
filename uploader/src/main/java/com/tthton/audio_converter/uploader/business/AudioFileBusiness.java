@@ -1,7 +1,9 @@
 package com.tthton.audio_converter.uploader.business;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
+import com.tthton.audio_converter.uploader.model.AudioFile;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,8 +14,8 @@ public interface AudioFileBusiness {
     /**
      * Convert audio file to midi
      *
-     * @param audioRequestDto audio file with related data
+     * @param audioFile audio file with related data
      * @return midi file as resource
      */
-    Resource convertFile(AudioRequestDto audioRequestDto) throws AudioFileException;
+    ByteArrayResource convertFile(AudioFile audioFile) throws AudioFileException;
 }

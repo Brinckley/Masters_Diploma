@@ -1,6 +1,7 @@
 package com.tthton.audio_converter.uploader.business.impl;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
+import com.tthton.audio_converter.uploader.model.AudioFile;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
@@ -10,6 +11,7 @@ import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import com.tthton.audio_converter.uploader.util.FileUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -42,25 +44,29 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
     }
 
     @Override
-    public Resource convertFile(AudioRequestDto audioRequestDto) throws AudioFileException {
-        MultipartFile audioFile = audioRequestDto.getAudioFile();
-        audioFileSizeGauge.set(audioFile.getSize());
+    public ByteArrayResource convertFile(AudioFile audioFile) throws AudioFileException {
+        MultipartFile multipartFile = audioFile.getAudioFile();
+        audioFileSizeGauge.set(multipartFile.getSize());
 
-        String completeFileName = FileUtil.generateFileName(audioFile.getOriginalFilename());
-        saveFile(completeFileName, audioFile);
+        String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
+        saveFile(completeFileName, multipartFile);
 
         ConversionAudioDto conversionAudioDto = ConversionAudioDto.builder()
                 .fileName(completeFileName)
-                .instrumentType(audioRequestDto.getInstrumentType().getType())
+                .instrumentType(audioFile.getInstrumentType().getType())
                 .build();
 
         ConvertedAudioDto convertedAudioDto = audioFileClient.sendPostRequest(conversionAudioDto);
         String midiFileName = convertedAudioDto.getFileName();
 
-        File file = audioFileRepository.loadMidiFile(midiFileName)
-                .orElseThrow(() -> AudioFileException.format("Cannot load midi result for name %s", midiFileName));
+        ByteArrayResource file;
+        try {
+            file = audioFileRepository.loadMidiFile(midiFileName);
+        } catch (IOException e) {
+            throw AudioFileException.format("Cannot load midi result for name %s, error %e", midiFileName, e.getMessage());
+        }
 
-        return new FileSystemResource(file);
+        return file;
     }
 
     private void saveFile(String completeFileName, MultipartFile audioFile) throws AudioFileException {

@@ -1,16 +1,17 @@
 import os
-import logging
 
 from basic_pitch import ICASSP_2022_MODEL_PATH
 from basic_pitch.inference import predict_and_save
 
-logger = logging.getLogger(__name__)
-
 shared_audio_folder = os.getenv("SHARED_AUDIO_FOLDER")
 shared_midi_folder = os.getenv("SHARED_MIDI_FOLDER")
 
+from app.logger.logger import get_logger
+
+logger = get_logger(__name__)
+
 def convert_file(filename: str):
-    logger.error(f"File received for conversion {filename}")
+    logger.info(f"File received for conversion {filename}")
     filepath = shared_audio_folder + "/" + filename
 
     os.makedirs(shared_midi_folder, exist_ok=True)

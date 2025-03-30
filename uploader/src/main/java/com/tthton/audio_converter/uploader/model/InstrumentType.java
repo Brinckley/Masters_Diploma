@@ -54,7 +54,7 @@ public enum InstrumentType {
         }
 
         for (InstrumentType instrumentType : InstrumentType.values()) {
-            if (instrumentType.type.equals(type)) {
+            if (instrumentType.type.equals(type.toLowerCase())) {
                 return Optional.of(instrumentType);
             }
         }

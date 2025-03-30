@@ -6,5 +6,6 @@ class AudioFileDto(BaseModel):
 
     fileName: str
 
+
 class CleanedAudioFileDto(BaseModel):
     fileName: str

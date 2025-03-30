@@ -1,16 +1,16 @@
 import os
-import logging
 
 from demucs.api import Separator
 import torchaudio
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.logger.logger import get_logger
 
+logger = get_logger(__name__)
 
 shared_audio_folder = os.getenv("SHARED_AUDIO_FOLDER")
 device = os.getenv("USED_DEVICE")
 sample_rate = 44100
+
 
 def clean_noise(filename: str, instrument_type: str):
     logger.info(f"File received for cleaning: {filename}")
