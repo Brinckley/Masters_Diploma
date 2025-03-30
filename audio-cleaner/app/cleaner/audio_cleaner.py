@@ -18,7 +18,6 @@ def clean_noise(filename: str, instrument_type: str):
     filepath = os.path.join(shared_audio_folder, filename)
     output_filename = f"cleaned_{filename}"
     output_filepath = os.path.join(shared_audio_folder, output_filename)
-    logger.info(f"Expected final path {output_filepath}")
 
     separator = Separator(model="htdemucs", device=device)
 

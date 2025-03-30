@@ -59,14 +59,7 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
         ConvertedAudioDto convertedAudioDto = audioFileClient.sendPostRequest(conversionAudioDto);
         String midiFileName = convertedAudioDto.getFileName();
 
-        ByteArrayResource file;
-        try {
-            file = audioFileRepository.loadMidiFile(midiFileName);
-        } catch (IOException e) {
-            throw AudioFileException.format("Cannot load midi result for name %s, error %e", midiFileName, e.getMessage());
-        }
-
-        return file;
+        return loadFile(midiFileName);
     }
 
     private void saveFile(String completeFileName, MultipartFile audioFile) throws AudioFileException {
@@ -76,5 +69,17 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
             log.error("Cannot save the audioFile in repository {}", e.getMessage());
             throw AudioFileException.format("Cannot save file : ", e.getMessage());
         }
+    }
+
+    private ByteArrayResource loadFile(String midiFileName) {
+        ByteArrayResource file;
+        try {
+            file = audioFileRepository.loadMidiFile(midiFileName);
+        } catch (IOException e) {
+            log.error("Cannot load midi from the repository {}", e.getMessage());
+            throw AudioFileException.format("Cannot load midi result for name %s, error %s",
+                    midiFileName, e.getMessage());
+        }
+        return file;
     }
 }

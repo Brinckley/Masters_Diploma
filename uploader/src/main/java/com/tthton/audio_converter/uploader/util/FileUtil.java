@@ -18,4 +18,19 @@ public class FileUtil {
     public String generateFileName(String originalFileName) {
         return UUID.randomUUID() + "_" + originalFileName;
     }
+
+    /**
+     * Replace the old extension with the new one
+     *
+     * @param initialFileName initial file name
+     * @param newExtension new extension
+     * @return edited file name
+     */
+    public String changeFileExtension(String initialFileName, String newExtension) {
+        int lastDot = initialFileName.lastIndexOf(".");
+        if (lastDot == -1) {
+            return initialFileName + "." + newExtension;
+        }
+        return initialFileName.substring(0, lastDot) + "." + newExtension;
+    }
 }

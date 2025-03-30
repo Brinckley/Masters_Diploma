@@ -24,12 +24,12 @@ def convert_file(filename: str):
                      False,
                      model_or_model_path=ICASSP_2022_MODEL_PATH)
 
-    midi_filename = change_extension_to_mid(filename)
+    midi_filename = create_final_midi_name(filename)
     logger.info(f"Midi fileName {midi_filename}")
     return midi_filename
 
 
-def change_extension_to_mid(filename):
+def create_final_midi_name(filename):
     base_name, _ = os.path.splitext(filename)
-    new_filename = base_name + ".mid"
+    new_filename = base_name + "_basic_pitch.mid"
     return new_filename
