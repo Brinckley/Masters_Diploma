@@ -1,6 +1,6 @@
 import logging
 from fastapi import APIRouter
-from app.models import FileNameDto
+from app.models import AudioFileNameDto, MidiFileDto
 
 from app.converter.converter import convert_file
 
@@ -8,12 +8,12 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-@router.post("/receive", response_model=FileNameDto)
-async def receive_file(dto: FileNameDto):
-    logger.error(f"File entity for uploading is received {dto.filePath} ")
+@router.post("/convert", response_model=AudioFileNameDto)
+async def receive_file(dto: AudioFileNameDto):
+    logger.error(f"File entity for uploading is received {dto.fileName} ")
 
-    midi_filepath = convert_file(filename=dto.filePath)
+    midi_filename = convert_file(filename=dto.fileName)
 
-    logger.error(f"File is converted. New path {midi_filepath}")
+    logger.error(f"File is converted. New file name {midi_filename}")
 
-    return FileNameDto(filePath=midi_filepath)
+    return MidiFileDto(fileName = midi_filename)

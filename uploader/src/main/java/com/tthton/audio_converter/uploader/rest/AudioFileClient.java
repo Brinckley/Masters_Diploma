@@ -2,6 +2,7 @@ package com.tthton.audio_converter.uploader.rest;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
+import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
 
 /**
  * Functions for communication with app that uses the convertor NN
@@ -22,5 +23,5 @@ public interface AudioFileClient {
      * @param conversionAudioDto data for conversion
      * @return name of the converted file
      */
-    String sendPostRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException;
+    ConvertedAudioDto sendPostRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException;
 }

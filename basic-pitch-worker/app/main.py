@@ -15,7 +15,6 @@ app = FastAPI(title="FastAPI File Echo")
 app.include_router(file.router)
 app.include_router(healthcheck.router)
 
-# Root route for testing
 @app.get("/")
 def root():
     logger.info("The root endpoint is reached")

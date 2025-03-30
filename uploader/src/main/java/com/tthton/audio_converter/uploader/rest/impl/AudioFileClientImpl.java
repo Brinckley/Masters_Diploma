@@ -2,6 +2,7 @@ package com.tthton.audio_converter.uploader.rest.impl;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
+import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
 import jakarta.annotation.PostConstruct;
@@ -52,7 +53,7 @@ public class AudioFileClientImpl implements AudioFileClient {
     }
 
     @Override
-    public String sendPostRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException {
+    public ConvertedAudioDto sendPostRequest(ConversionAudioDto conversionAudioDto) throws AudioFileException {
         String url = NEURAL_WORKER_URL + CONVERT_PATH;
         log.info("Sending file path to url : {}", url);
 
@@ -60,7 +61,7 @@ public class AudioFileClientImpl implements AudioFileClient {
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<ConversionAudioDto> request = new HttpEntity<>(conversionAudioDto, httpHeaders);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+        ResponseEntity<ConvertedAudioDto> response = restTemplate.postForEntity(url, request, ConvertedAudioDto.class);
 
         if (response.getStatusCode() != HttpStatus.OK) {
             throw AudioFileException.format("Failed to get ping response from converter client. Status code %d",

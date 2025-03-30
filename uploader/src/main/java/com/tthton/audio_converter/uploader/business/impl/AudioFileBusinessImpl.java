@@ -3,6 +3,7 @@ package com.tthton.audio_converter.uploader.business.impl;
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
+import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
@@ -53,7 +54,8 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
                 .instrumentType(audioRequestDto.getInstrumentType().getType())
                 .build();
 
-        String midiFileName = audioFileClient.sendPostRequest(conversionAudioDto);
+        ConvertedAudioDto convertedAudioDto = audioFileClient.sendPostRequest(conversionAudioDto);
+        String midiFileName = convertedAudioDto.getFileName();
 
         File file = audioFileRepository.loadMidiFile(midiFileName)
                 .orElseThrow(() -> AudioFileException.format("Cannot load midi result for name %s", midiFileName));
