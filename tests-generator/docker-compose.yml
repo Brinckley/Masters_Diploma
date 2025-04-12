@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  midi-creator:
+  
+
+networks:
+  tester-network:
+    driver: bridge
+
+volumes:
+  uploads-data:
+    driver: local
+  midis-data:
+    driver: local
