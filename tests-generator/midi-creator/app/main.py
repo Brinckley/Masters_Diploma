@@ -1,16 +1,16 @@
 import os
 
+from app.generator.midi.generator import generate_midi
 
-
-
-output_dir = os.getenv("OUTPUT_DIR")
-gen_num = os.getenv("FILES_NUM")
+midi_output_dir = "midi_files"
+gen_num = 100
 
 
 def main():
-    generate_batch(output_dir, gen_num)
+    generate_midi(100, midi_output_dir)
     return 0
 
 
 if __name__ == '__main__':
     main()
+
