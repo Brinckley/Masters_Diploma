@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+
+  midi-creator:
+    build:
+      context: ./midi-creator
+    container_name: midi-creator
+    environment:
+      - MIDI_FILES=midi_files
+      - MIDI_NUM=100
+    volumes:
+      - ./midi-files:/app/midi_files
+
+volumes:
+  midi-files:
+    driver: local

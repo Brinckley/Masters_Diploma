@@ -47,8 +47,6 @@ def generate_melody(filepath, note_count, scale_notes):
 
 
 def generate_midi(num_files: int, output_dir: str):
-    os.makedirs(output_dir, exist_ok=True)
-
     for i in range(1, num_files + 1):
         key = random.choice(list(ROOT_NOTES.keys()))
         scale_type = random.choice(list(SCALE_PATTERNS.keys()))
