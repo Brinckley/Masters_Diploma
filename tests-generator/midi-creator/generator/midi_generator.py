@@ -1,6 +1,17 @@
 import os
 import random
+import logging
+
 from mido import Message, MidiFile, MidiTrack
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+
+logger = logging.getLogger(__name__)
 
 
 SCALE_PATTERNS = {
@@ -47,6 +58,8 @@ def generate_melody(filepath, note_count, scale_notes):
 
 
 def generate_midi(num_files: int, output_dir: str):
+    logger.info(f"Starting MIDI generation for {num_files} files")
+
     for i in range(1, num_files + 1):
         key = random.choice(list(ROOT_NOTES.keys()))
         scale_type = random.choice(list(SCALE_PATTERNS.keys()))
@@ -55,4 +68,5 @@ def generate_midi(num_files: int, output_dir: str):
         note_count = random.randint(64, 128)
         filename = f"midi_test_{i}_{key}_{scale_type}.mid"
         generate_melody(os.path.join(output_dir, filename), note_count, scale)
-        print(f"Saved: {filename}")
+
+        logger.info(f"Generated MIDI file : {filename}")

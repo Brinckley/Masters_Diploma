@@ -8,7 +8,7 @@ services:
     container_name: midi-creator
     environment:
       - MIDI_FILES=midi_files
-      - MIDI_NUM=100
+      - MIDI_NUM=5
     volumes:
       - ./midi-files:/app/midi_files
 
@@ -18,10 +18,29 @@ services:
     container_name: sound-creator
     environment:
       - MIDI_FILES=midi_files
+      - WAV_FILES=wav-files
     volumes:
       - ./midi-files:/app/midi_files
+      - ./wav-files:/app/wav-files
+
+  
+  noise-generator:
+    build:
+      context: ./noise-generator
+    container_name: noise-generator
+    environment:
+      - WAV_FILES=/app/wav-files
+      - NOISY_FILES=/app/noisy-files
+      - NOISE_LEVEL=0.02
+    volumes:
+      - ./wav-files:/app/wav-files
+      - ./noisy-files:/app/noisy-files
     
 
 volumes:
   midi-files:
+    driver: local
+  wav-files:
+    driver: local
+  noisy-files:
     driver: local
