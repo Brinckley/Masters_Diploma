@@ -32,7 +32,7 @@ public class AudioFileController {
     private final AudioFileBusiness audioFileService;
 
     @Observed(name = "convertToMidi")
-    @GetMapping(value = "/convertAudio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping(value = "/convert_audio", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Resource> convertToMidi(@Valid @ModelAttribute AudioRequestDto audioRequestDto) {
         AudioFile audioFile = AudioFile.builder()
                 .userId(audioRequestDto.getUserId())
