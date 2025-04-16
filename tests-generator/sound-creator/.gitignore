@@ -1,0 +1,6 @@
+.idea
+.venv
+
+# synth file is too large for GitHub. Can be downloaded here:
+# https://github.com/urish/cinto/blob/master/media/FluidR3%20GM.sf2
+FluidR3_GM.sf2
