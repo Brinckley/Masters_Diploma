@@ -31,6 +31,9 @@ services:
       converter-network:
         aliases:
           - uploader
+      test-network:
+        aliases:
+          - uploader
     volumes:
       - uploads-data:/app/uploads
       - midis-data:/app/midis
@@ -105,6 +108,8 @@ services:
 networks:
   converter-network:
     driver: bridge
+  test-network:
+    external: true
 
 volumes:
   uploads-data:

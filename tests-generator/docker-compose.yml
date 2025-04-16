@@ -23,7 +23,6 @@ services:
       - ./midi-files:/app/midi_files
       - ./wav-files:/app/wav-files
 
-  
   noise-generator:
     build:
       context: ./noise-generator
@@ -36,11 +35,30 @@ services:
       - ./wav-files:/app/wav-files
       - ./noisy-files:/app/noisy-files
     
+  track-sender:
+    build:
+      context: ./track-sender
+    container_name: track-sender
+    environment:
+      - NOISY_FILES=/app/noisy-files
+      - UPLOADER_CONVERTER_URL=http://uploader:8080/convert_audio
+      - OUTPUT_FILES=/app/output-files
+      - UPLOADER_HEALTHCHECK=http://uploader:8080/healthcheck_global
+    networks:
+      - test-network   
+    volumes:
+      - ./noisy-files:/app/noisy-files
+      - ./output-files:/app/output-files
 
+networks:
+  test-network:
+    external: true
 volumes:
   midi-files:
     driver: local
   wav-files:
     driver: local
   noisy-files:
+    driver: local
+  output-files:
     driver: local
