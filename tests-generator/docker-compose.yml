@@ -12,6 +12,16 @@ services:
     volumes:
       - ./midi-files:/app/midi_files
 
+  sound-creator:
+    build:
+      context: ./sound-creator
+    container_name: sound-creator
+    environment:
+      - MIDI_FILES=midi_files
+    volumes:
+      - ./midi-files:/app/midi_files
+    
+
 volumes:
   midi-files:
     driver: local
