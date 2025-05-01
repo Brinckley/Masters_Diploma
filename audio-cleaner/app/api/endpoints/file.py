@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from fastapi import APIRouter
 
@@ -20,7 +21,11 @@ convert_uri_path = "/convert"
 async def receive_file(audio_dto: AudioFileDto):
     logger.info(f"File entity for uploading is received {audio_dto.fileName} ")
 
-    filename_dto = clean_noise(filename=audio_dto.fileName, instrument_type=audio_dto.instrumentType) # TODO fix the cleaning
+    try:
+        filename_dto = clean_noise(filename=audio_dto.fileName, instrument_type=audio_dto.instrumentType) # TODO fix the cleaning
+    except Exception as e:
+        logger.error(f"ERROR in audio processing: {e}")
+        traceback.print_exc()
 
     url = f"http://{basic_pitch_host}:{basic_pitch_port}" + convert_uri_path
     cleaned_audio = CleanedAudioFileDto(fileName=filename_dto)
