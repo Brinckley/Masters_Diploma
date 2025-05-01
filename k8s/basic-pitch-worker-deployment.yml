@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: basic-pitch-worker
+  namespace: converter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basic-pitch-worker
+  template:
+    metadata:
+      labels:
+        app: basic-pitch-worker
+    spec:
+      containers:
+        - name: basic-pitch-worker
+          image: basic-pitch-worker:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8011
+          envFrom:
+            - configMapRef:
+                name: basic-pitch-env
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8011
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - mountPath: /app/uploads
+              name: uploads-vol
+            - mountPath: /app/midis
+              name: midis-vol
+      volumes:
+        - name: uploads-vol
+          persistentVolumeClaim:
+            claimName: uploads-pvc
+        - name: midis-vol
+          persistentVolumeClaim:
+            claimName: midis-pvc
