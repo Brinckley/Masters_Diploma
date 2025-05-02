@@ -7,58 +7,69 @@ services:
       context: ./midi-creator
     container_name: midi-creator
     environment:
-      - MIDI_FILES=midi_files
+      - MIDI_FILES=vol-midi-files
       - MIDI_NUM=5
     volumes:
-      - ./midi-files:/app/midi_files
+      - ./vol-midi-files:/app/vol-midi-files
 
   sound-creator:
     build:
       context: ./sound-creator
     container_name: sound-creator
     environment:
-      - MIDI_FILES=midi_files
-      - WAV_FILES=wav-files
+      - MIDI_FILES=vol-midi-files
+      - WAV_FILES=vol-wav-files
     volumes:
-      - ./midi-files:/app/midi_files
-      - ./wav-files:/app/wav-files
+      - ./vol-midi-files:/app/vol-midi-files
+      - ./vol-wav-files:/app/vol-wav-files
 
   noise-generator:
     build:
       context: ./noise-generator
     container_name: noise-generator
     environment:
-      - WAV_FILES=/app/wav-files
-      - NOISY_FILES=/app/noisy-files
+      - WAV_FILES=/app/vol-wav-files
+      - NOISY_FILES=/app/vol-noisy-files
       - NOISE_LEVEL=0.02
     volumes:
-      - ./wav-files:/app/wav-files
-      - ./noisy-files:/app/noisy-files
+      - ./vol-wav-files:/app/vol-wav-files
+      - ./vol-noisy-files:/app/vol-noisy-files
     
   track-sender:
     build:
       context: ./track-sender
     container_name: track-sender
     environment:
-      - NOISY_FILES=/app/noisy-files
+      - NOISY_FILES=/app/vol-noisy-files
       - UPLOADER_CONVERTER_URL=http://uploader:8080/convert_audio
-      - OUTPUT_FILES=/app/output-files
+      - OUTPUT_FILES=/app/vol-output-files
       - UPLOADER_HEALTHCHECK=http://uploader:8080/healthcheck_global
     networks:
       - test-network   
     volumes:
-      - ./noisy-files:/app/noisy-files
-      - ./output-files:/app/output-files
+      - ./vol-noisy-files:/app/vol-noisy-files
+      - ./vol-output-files:/app/vol-output-files
+
+  midi-comporator:
+    build:
+      context: ./midi-comporator
+    container_name: midi-comporator
+    environment:
+      - ORIGINAL_MIDIS=/app/vol-midi-files
+      - CONVERTED_MIDIS=/app/vol-output-files
+    volumes:
+      - ./vol-output-files:/app/vol-output-files
+      - ./vol-midi-files:/app/vol-midi-files
 
 networks:
   test-network:
     external: true
 volumes:
-  midi-files:
+  vol-midi-files:
     driver: local
-  wav-files:
+  vol-wav-files:
     driver: local
-  noisy-files:
+  vol-noisy-files:
     driver: local
-  output-files:
+  vol-output-files:
     driver: local
