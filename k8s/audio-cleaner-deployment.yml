@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: audio-cleaner
+  namespace: converter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audio-cleaner
+  template:
+    metadata:
+      labels:
+        app: audio-cleaner
+    spec:
+      containers:
+        - name: audio-cleaner
+          image: audio-cleaner:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8001
+          envFrom:
+            - configMapRef:
+                name: audio-cleaner-env
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - mountPath: /app/uploads
+              name: uploads-vol
+      volumes:
+        - name: uploads-vol
+          persistentVolumeClaim:
+            claimName: uploads-pvc

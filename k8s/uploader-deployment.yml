@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: uploader
+  namespace: converter-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uploader
+  template:
+    metadata:
+      labels:
+        app: uploader
+    spec:
+      containers:
+        - name: uploader
+          image: uploader:local
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: uploader-env
+          volumeMounts:
+            - mountPath: /app/uploads
+              name: uploads-vol
+            - mountPath: /app/midis
+              name: midis-vol
+      volumes:
+        - name: uploads-vol
+          persistentVolumeClaim:
+            claimName: uploads-pvc
+        - name: midis-vol
+          persistentVolumeClaim:
+            claimName: midis-pvc
