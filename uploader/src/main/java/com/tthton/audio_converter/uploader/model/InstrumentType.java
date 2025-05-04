@@ -23,14 +23,24 @@ public enum InstrumentType {
     VOCALS("vocals"),
 
     /**
-     * Separated drum track.
+     * Separated drum track
      */
     DRUMS("drums"),
 
     /**
-     * Separated bass track.
+     * Separated bass track
      */
     BASS("bass"),
+
+    /**
+     * Separated piano track
+     */
+    PIANO("piano"),
+
+    /**
+     * Separated guitar track
+     */
+    GUITAR("guitar"),
 
     /**
      * Remaining musical accompaniment

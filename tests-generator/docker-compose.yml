@@ -8,7 +8,7 @@ services:
     container_name: midi-creator
     environment:
       - MIDI_FILES=vol-midi-files
-      - MIDI_NUM=5
+      - MIDI_NUM=50
     volumes:
       - ./vol-midi-files:/app/vol-midi-files
 
@@ -30,7 +30,7 @@ services:
     environment:
       - WAV_FILES=/app/vol-wav-files
       - NOISY_FILES=/app/vol-noisy-files
-      - NOISE_LEVEL=0.02
+      - NOISE_LEVEL=0.06
     volumes:
       - ./vol-wav-files:/app/vol-wav-files
       - ./vol-noisy-files:/app/vol-noisy-files
