@@ -55,7 +55,7 @@ def batch_compare(original_folder, converted_folder):
     total_p, total_r, total_f = 0, 0, 0
     count = 0
 
-    for file in os.listdir(original_folder):
+    for file in os.listdir(converted_folder):
         original_path = os.path.join(original_folder, file)
         converted_path = os.path.join(converted_folder, file)
 

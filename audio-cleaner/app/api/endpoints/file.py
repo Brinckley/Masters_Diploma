@@ -1,7 +1,7 @@
 import os
 import traceback
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.model import AudioFileDto, CleanedAudioFileDto
 from app.cleaner.audio_cleaner import clean_noise
@@ -26,6 +26,10 @@ async def receive_file(audio_dto: AudioFileDto):
     except Exception as e:
         logger.error(f"ERROR in audio processing: {e}")
         traceback.print_exc()
+        raise HTTPException(status_code=402, detail=f"ERROR in audio processing: {e}")
+
+    if filename_dto is None:
+        return {"result" : "cannot process this file"}
 
     url = f"http://{basic_pitch_host}:{basic_pitch_port}" + convert_uri_path
     cleaned_audio = CleanedAudioFileDto(fileName=filename_dto)

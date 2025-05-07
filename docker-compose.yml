@@ -48,6 +48,9 @@ services:
       - 8001:8001
     env_file:
       - ./config/env/audio-cleaner.env
+    depends_on:
+      basic-pitch-worker:
+        condition: service_healthy
     networks:
       converter-network:
         aliases:
@@ -56,7 +59,7 @@ services:
       - uploads-data:/app/uploads
       - ./tmp/uploads:/app/uploads
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/healthcheck"]
+      test: curl --fail http://localhost:8001/healthcheck_solo || exit 1
       interval: 30s  
       timeout: 10s   
       retries: 3     
