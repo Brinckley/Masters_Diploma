@@ -7,5 +7,6 @@ aiohttp==3.11.13
 
 torchaudio==2.1.0
 numpy==1.26.4
-git+https://github.com/adefossez/demucs.git
+demucs==4.0.1
+#git+https://github.com/adefossez/demucs.git
 soundfile==0.13.1

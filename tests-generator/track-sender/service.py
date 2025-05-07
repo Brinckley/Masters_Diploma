@@ -37,7 +37,7 @@ def send_files_to_uploader(noisy_files_dir, uploader_url, output_dir, user_id):
             files = {'audioFile': (filename, open(filepath, 'rb'), 'audio/wav')}
             data = {
                 'userId': user_id,
-                'instrumentType': 'other',
+                'instrumentType': 'piano',
             }
 
             try:

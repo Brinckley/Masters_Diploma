@@ -1,11 +1,13 @@
-FROM python:3.9
+FROM python:3.9-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
     libsndfile1 \
-    libsndfile-dev \
-    ffmpeg
+    ffmpeg \
+    git \
+    curl \
+ && rm -rf /var/lib/apt/lists/*
 
 ENV SNDFILE_INSTALL_DIR=/usr/lib/x86_64-linux-gnu
 

@@ -20,3 +20,10 @@ async def healthcheck():
     response = requests.get(url)
 
     return response.json()
+
+
+@router.get("/healthcheck_solo")
+async def healthcheck_solo():
+    logger.info("Healthcheck_solo endpoint in the cleaner service is reached")
+
+    return {"status": "ok"}
