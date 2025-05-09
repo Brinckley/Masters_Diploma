@@ -5,16 +5,15 @@ import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.Optional;
 
 /**
  * In memory realization of {@link AudioFileRepository}
@@ -58,5 +57,13 @@ public class AudioFileRepositoryImpl implements AudioFileRepository {
         byte[] midiBytes = Files.readAllBytes(filePath);
 
         return new ByteArrayResource(midiBytes);
+    }
+
+    @Override
+    public void removeMidiFile(String fileName) throws IOException {
+        Path filePath = Paths.get(MIDI_DIRECTORY_NAME).resolve(fileName).normalize();
+
+        Files.delete(filePath);
+        log.info("File with file name {} deleted", fileName);
     }
 }

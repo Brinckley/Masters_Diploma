@@ -39,4 +39,7 @@ def clean_noise(filename: str, instrument_type: str) -> str:
     shutil.move(str(new_source_path), str(shared_audio_folder))
     logger.info(f"Noise-cleaned file saved as {new_file_name}")
 
+    shutil.rmtree(Path(temp_output_dir) / demucs_model / track_name)
+    os.remove(input_path)
+
     return new_file_name

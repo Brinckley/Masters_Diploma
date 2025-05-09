@@ -5,6 +5,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Repository for saving audio files and loading midi results
@@ -21,11 +22,20 @@ public interface AudioFileRepository {
     void saveAudioFile(String fileName, MultipartFile multipartFile) throws IOException;
 
     /**
-     * Getting optional of midi file by its name
+     * Getting midi file by its name
      *
      * @param fileName file name
-     * @return optional of file
+     * @return file as byte array
+     * @throws IOException if unable to handle file reading
      */
     @Observed(name = "loadingMidiFile")
     ByteArrayResource loadMidiFile(String fileName) throws IOException;
+
+    /**
+     * Removing midi file by its name
+     *
+     * @param fileName file name
+     */
+    @Observed(name = "removingMidiFile")
+    void removeMidiFile(String fileName) throws IOException;
 }
