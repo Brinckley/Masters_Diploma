@@ -49,7 +49,7 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
         audioFileSizeGauge.set(multipartFile.getSize());
 
         String completeFileName = FileUtil.generateFileName(multipartFile.getOriginalFilename());
-        saveFile(completeFileName, multipartFile);
+        this.saveFile(completeFileName, multipartFile);
 
         ConversionAudioDto conversionAudioDto = ConversionAudioDto.builder()
                 .fileName(completeFileName)
@@ -59,7 +59,10 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
         ConvertedAudioDto convertedAudioDto = audioFileClient.sendPostRequest(conversionAudioDto);
         String midiFileName = convertedAudioDto.getFileName();
 
-        return loadFile(midiFileName);
+        ByteArrayResource resource = this.loadFile(midiFileName);
+        this.removeFile(midiFileName);
+
+        return resource;
     }
 
     private void saveFile(String completeFileName, MultipartFile audioFile) throws AudioFileException {
@@ -81,5 +84,15 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
                     midiFileName, e.getMessage());
         }
         return file;
+    }
+
+    private void removeFile(String midiFileName) {
+        try {
+            audioFileRepository.removeMidiFile(midiFileName);
+        } catch (IOException e) {
+            log.error("Cannot remove midi from the repository {}", e.getMessage());
+            throw AudioFileException.format("Cannot remove midi result for name %s, error %s",
+                    midiFileName, e.getMessage());
+        }
     }
 }

@@ -35,6 +35,8 @@ def convert_file(filename: str):
             logger.error(f"MIDI file was not created: {midi_path}")
             raise Exception(f"MIDI file was not created: {midi_path}")
 
+        os.remove(filepath)
+
         logger.info(f"MIDI file created successfully: {midi_path}")
         return midi_filename
 
