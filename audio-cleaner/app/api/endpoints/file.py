@@ -21,12 +21,16 @@ convert_uri_path = "/convert"
 async def receive_file(audio_dto: AudioFileDto):
     logger.info(f"File entity for uploading is received {audio_dto.fileName} ")
 
-    try:
-        filename_dto = clean_noise(filename=audio_dto.fileName, instrument_type=audio_dto.instrumentType)
-    except Exception as e:
-        logger.error(f"ERROR in audio processing: {e}")
-        traceback.print_exc()
-        raise HTTPException(status_code=402, detail=f"ERROR in audio processing: {e}")
+    if audio_dto.instrumentType == "original":
+        filename_dto = audio_dto.fileName
+        logger.info(f"File with name {filename_dto} will not be cleaned")
+    else:
+        try:
+            filename_dto = clean_noise(filename=audio_dto.fileName, instrument_type=audio_dto.instrumentType)
+        except Exception as e:
+            logger.error(f"ERROR in audio processing: {e}")
+            traceback.print_exc()
+            raise HTTPException(status_code=402, detail=f"ERROR in audio processing: {e}")
 
     if filename_dto is None:
         return {"result" : "cannot process this file"}
