@@ -8,7 +8,7 @@ services:
     container_name: midi-creator
     environment:
       - MIDI_FILES=vol-midi-files
-      - MIDI_NUM=50
+      - MIDI_NUM=100
     volumes:
       - ./vol-midi-files:/app/vol-midi-files
 
@@ -41,11 +41,12 @@ services:
     container_name: track-sender
     environment:
       - NOISY_FILES=/app/vol-noisy-files
-      - UPLOADER_CONVERTER_URL=http://uploader:8080/convert_audio
+      - UPLOADER_CONVERTER_URL=http://uploader:8080/convert_audio # replacing uploader with yandex compute cloud IP here
       - OUTPUT_FILES=/app/vol-output-files
-      - UPLOADER_HEALTHCHECK=http://uploader:8080/healthcheck_global
+      - UPLOADER_HEALTHCHECK=http://uploader:8080/healthcheck_global # same here
+      - INSTRUMENT_TYPE=piano  # 'original' for skipping cleaning step
     networks:
-      - test-network   
+      - test-network
     volumes:
       - ./vol-noisy-files:/app/vol-noisy-files
       - ./vol-output-files:/app/vol-output-files

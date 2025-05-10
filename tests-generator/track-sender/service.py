@@ -1,6 +1,8 @@
 import os
 import logging
 import requests
+import sys
+import time
 
 logging.basicConfig(
     level=logging.INFO,
@@ -15,6 +17,7 @@ UPLOADER_CONVERTER_URL = os.getenv("UPLOADER_CONVERTER_URL")
 UPLOADER_HEALTHCHECK = os.getenv("UPLOADER_HEALTHCHECK")
 MIDI_OUTPUT_DIR = os.getenv("OUTPUT_FILES")
 USER_ID = os.getenv("USER_ID", "default-user-id-0")
+INSTRUMENT_TYPE = os.getenv("INSTRUMENT_TYPE")
 
 
 def check_health(uploader_base_url):
@@ -24,6 +27,7 @@ def check_health(uploader_base_url):
         logger.info(f"{uploader_base_url} OK: {response.text}")
     except Exception as e:
         logger.error(f"{uploader_base_url} FAILED: {e}")
+        sys.exit(1)
 
 
 def send_files_to_uploader(noisy_files_dir, uploader_url, output_dir, user_id):
@@ -37,9 +41,10 @@ def send_files_to_uploader(noisy_files_dir, uploader_url, output_dir, user_id):
             files = {'audioFile': (filename, open(filepath, 'rb'), 'audio/wav')}
             data = {
                 'userId': user_id,
-                'instrumentType': 'piano',
+                'instrumentType': INSTRUMENT_TYPE,
             }
 
+            start_time = time.time()
             try:
                 response = requests.get(uploader_url, files=files, data=data)
                 response.raise_for_status()
@@ -54,6 +59,9 @@ def send_files_to_uploader(noisy_files_dir, uploader_url, output_dir, user_id):
                 logger.info(f"Saved response to {midi_path}")
             except Exception as e:
                 logger.error(f"Failed to send {filename}: {e}")
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            logger.info(f"Time taken to handle and convert file {filename}: {elapsed_time:.2f} seconds")
 
 
 if __name__ == '__main__':
@@ -61,4 +69,9 @@ if __name__ == '__main__':
     check_health(UPLOADER_HEALTHCHECK)
 
     logger.info(f"Sending data for conversion to the url {UPLOADER_CONVERTER_URL}")
+    start_time = time.time()
     send_files_to_uploader(NOISY_DIR, UPLOADER_CONVERTER_URL, MIDI_OUTPUT_DIR, USER_ID)
+    end_time = time.time()
+
+    elapsed_time = end_time - start_time
+    logger.info(f"Time taken to convert all files: {elapsed_time:.2f} seconds")
