@@ -1,0 +1,8 @@
+rabbitmq:
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USER}
+  password: ${RABBITMQ_PASS}
+  virtualHost: ${RABBITMQ_VIRTUAL_HOST}
+  uploadedQueue: ${RABBITMQ_UPLOADED_QUEUE}
+  convertedQueue: ${RABBITMQ_MIDI_QUEUE}

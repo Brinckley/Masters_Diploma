@@ -5,6 +5,7 @@ import com.tthton.audio_converter.uploader.model.AudioFile;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
+import com.tthton.audio_converter.uploader.rabbitmq.service.RabbitMqProducer;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
@@ -31,13 +32,13 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
 
     private final AudioFileRepository audioFileRepository;
 
-    private final AudioFileClient audioFileClient;
+    private final RabbitMqProducer rabbitMqProducer;
 
     private final AtomicLong audioFileSizeGauge;
 
-    public AudioFileBusinessImpl(AudioFileRepository audioFileRepository, AudioFileClient audioFileClient, MeterRegistry meterRegistry) {
+    public AudioFileBusinessImpl(AudioFileRepository audioFileRepository, RabbitMqProducer rabbitMqProducer, MeterRegistry meterRegistry) {
         this.audioFileRepository = audioFileRepository;
-        this.audioFileClient = audioFileClient;
+        this.rabbitMqProducer = rabbitMqProducer;
 
         audioFileSizeGauge = new AtomicLong(0);
         meterRegistry.gauge(FILE_SIZE_GAUGE_NAME, audioFileSizeGauge);
@@ -56,7 +57,7 @@ public class AudioFileBusinessImpl implements AudioFileBusiness {
                 .instrumentType(audioFile.getInstrumentType().getType())
                 .build();
 
-        ConvertedAudioDto convertedAudioDto = audioFileClient.sendPostRequest(conversionAudioDto);
+        ConvertedAudioDto convertedAudioDto = rabbitMqProducer.sendAudioProcessingRequest(conversionAudioDto);
         String midiFileName = convertedAudioDto.getFileName();
 
         ByteArrayResource resource = this.loadFile(midiFileName);

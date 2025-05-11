@@ -32,6 +32,7 @@
 		<org.aspectj.aspectjrt.v>1.9.9.1</org.aspectj.aspectjrt.v>
 		<org.aspectj.aspectjweaver.v>1.9.9.1</org.aspectj.aspectjweaver.v>
 		<org.springframework.spring-aop.v>6.2.1</org.springframework.spring-aop.v>
+		<spring-boot-starter-amqp.v>3.3.4</spring-boot-starter-amqp.v>
 	</properties>
 
 	<dependencies>
@@ -101,6 +102,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
 			<version>${org.springframework.spring-aop.v}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			<version>${spring-boot-starter-amqp.v}</version>
 		</dependency>
 	</dependencies>
 
