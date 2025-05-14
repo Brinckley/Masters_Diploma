@@ -2,7 +2,6 @@ package com.tthton.audio_converter.uploader.business.impl;
 
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.AudioFile;
-import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
 import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
@@ -12,8 +11,6 @@ import com.tthton.audio_converter.uploader.util.FileUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,14 +1,9 @@
 package com.tthton.audio_converter.uploader.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tthton.audio_converter.uploader.model.InstrumentType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
-import lombok.extern.jackson.Jacksonized;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

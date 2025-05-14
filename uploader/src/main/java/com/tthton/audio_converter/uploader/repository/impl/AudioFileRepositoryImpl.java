@@ -5,7 +5,6 @@ import com.tthton.audio_converter.uploader.repository.AudioFileRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
-import java.util.Optional;
 
 /**
  * In memory realization of {@link AudioFileRepository}

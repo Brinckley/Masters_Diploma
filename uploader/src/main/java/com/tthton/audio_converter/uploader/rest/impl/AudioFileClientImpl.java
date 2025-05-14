@@ -3,12 +3,9 @@ package com.tthton.audio_converter.uploader.rest.impl;
 import com.tthton.audio_converter.uploader.exception.AudioFileException;
 import com.tthton.audio_converter.uploader.model.dto.ConversionAudioDto;
 import com.tthton.audio_converter.uploader.model.dto.ConvertedAudioDto;
-import com.tthton.audio_converter.uploader.model.dto.FileNameDto;
 import com.tthton.audio_converter.uploader.rest.AudioFileClient;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

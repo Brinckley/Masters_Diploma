@@ -3,7 +3,6 @@ package com.tthton.audio_converter.uploader.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.jackson.Jacksonized;
 
 @Data

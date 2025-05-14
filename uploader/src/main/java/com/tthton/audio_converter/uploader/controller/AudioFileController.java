@@ -3,10 +3,8 @@ package com.tthton.audio_converter.uploader.controller;
 import com.tthton.audio_converter.uploader.model.AudioFile;
 import com.tthton.audio_converter.uploader.model.InstrumentType;
 import com.tthton.audio_converter.uploader.model.dto.AudioRequestDto;
-import com.tthton.audio_converter.uploader.model.dto.FileRequestDto;
 import com.tthton.audio_converter.uploader.business.AudioFileBusiness;
 import com.tthton.audio_converter.uploader.util.FileUtil;
-import io.micrometer.core.annotation.Timed;
 import io.micrometer.observation.annotation.Observed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 /**
  * Rest controller related to downloading and uploading input files
