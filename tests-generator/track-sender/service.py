@@ -29,7 +29,6 @@ def check_health(uploader_base_url):
         logger.error(f"{uploader_base_url} FAILED: {e}")
         sys.exit(1)
 
-
 def send_files_to_uploader(noisy_files_dir, uploader_url, output_dir, user_id):
     logger.info(f"Start sending test files to url : {uploader_url}")
 
