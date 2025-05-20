@@ -69,15 +69,28 @@ def process_audio(instrument, user_id, telegram_audio, server_url=CONVERTER_URL)
     mime_type = telegram_audio.mime_type or 'application/octet-stream'
     print(mime_type)
 
+    filename = getattr(telegram_audio, 'file_name', None)
+    if not filename:
+        ext = {
+            'audio/mpeg': '.mp3',
+            'audio/wav': '.wav',
+            'audio/x-wav': '.wav',
+            'audio/ogg': '.ogg',
+            'audio/vnd.wave': '.wav'
+        }.get(mime_type, '.bin')
+        filename = f'input{ext}'
+
     files = {
-        'audioFile': ('input' + mime_type, BytesIO(file), mime_type)
+        'audioFile': (filename, BytesIO(file), mime_type)
     }
     data = {
         'userId': str(user_id),
         'instrumentType': instrument
     }
 
-    response = requests.get(server_url, files=files, data=data)
+    response_health = requests.get(HEALTHCHECK_URL)
+    print(f"Sending file {files} with data {data} to {server_url}")
+    response = requests.post(server_url, files=files, data=data)
     response.raise_for_status()
     print(f"Response received saving ...")
 

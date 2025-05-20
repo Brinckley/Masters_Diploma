@@ -10,6 +10,7 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY mixkit-people-in-fair-ambience-and-laughter-368.wav .
 COPY service.py .
 
 CMD ["python", "service.py"]
