@@ -12,7 +12,7 @@ docker compose up
 С помощью `deploy.sh` можно запустить проект на сервере с Minikube.
 
 Диаграмма C4 для всей системы:
-![c4_diploma](https://github.com/Brinckley/Masters_Diploma/tree/main/images/c4_diploma.jpg)
+![c4_diploma](https://github.com/Brinckley/Masters_Diploma/blob/main/images/c4_diploma.jpg)
 
 `tgclient` - Python, Flask, Webhook телеграм бот.  
 `uploader` - Java Spring Boot сервис для приема файлов от пользователя.  
