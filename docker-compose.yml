@@ -31,9 +31,9 @@ services:
       converter-network:
         aliases:
           - uploader
-      test-network:
-        aliases:
-          - uploader
+      # test-network:
+      #   aliases:
+      #     - uploader
     volumes:
       - uploads-data:/app/uploads
       - midis-data:/app/midis
@@ -100,31 +100,37 @@ services:
         aliases:
           - tgclient
     
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - converter-network
 
-#  prometheus:
-#    image: prom/prometheus
-#    ports:
-#      - 9090:9090
-#    volumes:
-#      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    networks:
-#      - converter-network
-#
-#  grafana:
-#    image: grafana/grafana
-#    ports:
-#      - 3000:3000
-#    environment:
-#      - GF_SECURITY_ADMIN_USER=admin
-#      - GF_SECURITY_ADMIN_PASSWORD=admin
-#    networks:
-#      - converter-network
+  node-exporter:
+    image: prom/node-exporter
+    pid: "host"
+    restart: unless-stopped
+    networks:
+      - converter-network
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - converter-network
 
 networks:
   converter-network:
     driver: bridge
-  test-network:
-    external: true
+  # test-network:
+  #   external: true
 
 volumes:
   uploads-data:

@@ -50,6 +50,7 @@ def handle_start(message):
     markup.row(btn_bass, btn_guitar)
     markup.add(btn_other)
     bot.reply_to(message, "Welcome to the audio2midi converter bot!")
+    bot.reply_to(message, "Welcome to the audio2midi converter bot!", reply_markup=markup)
 
 
 @bot.message_handler(content_types=['text'])
